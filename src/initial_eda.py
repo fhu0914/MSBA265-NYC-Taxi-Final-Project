@@ -9,11 +9,19 @@ import numpy as np
 ROOT = Path(__file__).resolve().parent.parent
 DATA_DIR = ROOT / "data"
 REPORTS_DIR = ROOT / "reports"  
+REPORTS_DIR.mkdir(exist_ok=True)
 
 print("Project root:", ROOT)
 print("Data folder:", DATA_DIR)
 
 TRAIN_ZIP = DATA_DIR / "train.zip"
+
+if not TRAIN_ZIP.exists():
+    raise SystemExit(
+        f"Could not find {TRAIN_ZIP}\n"
+        "Download train.zip from the Kaggle competition (see Data Setup in "
+        "README.md) and place it at data/train.zip, then run this script again."
+    )
 
 train = pd.read_csv(TRAIN_ZIP)
 

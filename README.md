@@ -32,6 +32,8 @@ This project uses the New York City Taxi Trip Duration dataset from the Kaggle c
 The data is based on 2016 New York City yellow taxi trip records. The training set contains 1,458,644 trips, and the test set contains 625,134 trips.
 
 Each row represents one taxi trip.
+# Converted for the data audit only. Excluded as a predictor: it is unknown
+# at pickup time and would leak the target.
 
 Important variables include:
 
@@ -51,11 +53,21 @@ The target variable is `trip_duration`, measured in seconds.
 
 ### Data Setup
 
-Download `train.zip` from the Kaggle New York City Taxi Trip Duration competition:
+This project uses the Kaggle *New York City Taxi Trip Duration* competition data,
+which is not included in this repository.
 
-https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data
+To obtain it:
 
-The raw data is not included in this repository.
+1. Create a free Kaggle account at https://www.kaggle.com if you do not have one.
+2. Open the competition page:
+   https://www.kaggle.com/competitions/nyc-taxi-trip-duration
+3. Go to the **Rules** tab and click **I Understand and Accept**.
+   Downloads stay locked until you do this.
+4. Go to the **Data** tab and download **`train.zip`** (about 63 MB).
+5. Place it at `data/train.zip` inside this repository.
+
+The file must be named exactly `train.zip` and must contain a single file,
+`train.csv`. Do not unzip it; the script reads the zip directly.
 
 ### How to Run
 
@@ -64,6 +76,34 @@ Clone the repository:
 ```bash
 git clone https://github.com/fhu0914/MSBA265-NYC-Taxi-Final-Project.git
 cd MSBA265-NYC-Taxi-Final-Project
+```
+
+### Environment
+
+- Python 3.10 or newer
+- Tested on Windows with Python 3.13
+
+Create and activate a virtual environment:
+
+**Windows PowerShell**
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+If PowerShell blocks activation:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+**macOS Terminal**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 Install the required packages:
@@ -149,6 +189,8 @@ The next stage of the project will:
 - test whether additional available predictors improve validation RMSLE
 - compare more complete models with the current median baseline and simple linear regression models
 - maintain a leakage-free workflow using only information that would be available at prediction time
+- treat pickup hour as a categorical or cyclical feature rather than a linear
+  numeric value; its current linear encoding may explain the small improvement
 
 ### AI Use Disclosure
 
