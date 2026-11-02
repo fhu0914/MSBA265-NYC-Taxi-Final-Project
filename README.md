@@ -1,6 +1,8 @@
 # MSBA 265 Final Project
 ## New York City Taxi Trip Duration
 
+**P1 Combined Submission PDF:** [P1.pdf](./P1.pdf)
+
 ### Project Overview
 
 This project uses the New York City Taxi Trip Duration dataset to study and predict taxi trip duration.
@@ -174,9 +176,9 @@ This suggests that trip distance is the strongest predictor tested so far, while
 
 ### Initial Findings
 
-The target variable, `trip_duration`, is strongly right-skewed in its original scale. After applying a log transformation, the main distribution becomes much easier to interpret.
+The target variable, `trip_duration`, is strongly right-skewed. For visualization, the histogram is limited to observations at or below the 99th percentile so that the main distribution is readable; this display cutoff does not remove observations from the modeling data. The model uses `log1p(trip_duration)` because the target is highly right-skewed.
 
-Median trip duration also varies by pickup hour. Trips are generally shorter in the early morning and longer during the daytime, suggesting that pickup time may be a useful predictor of trip duration.
+Median trip duration varies substantially by pickup hour, from about 7.9 minutes at 6:00 to about 12.1 minutes at 14:00. However, adding `pickup_hour` to the distance-only linear regression improves validation RMSLE only slightly, from 0.6388 to 0.6376. One likely reason is that hour is currently treated as a simple numeric feature, while the observed daily pattern is nonlinear.
 
 Estimated trip distance appears to be the strongest predictor tested so far. A distance-only linear regression substantially improved validation RMSLE compared with the median baseline, while adding pickup hour produced a smaller additional improvement.
 

@@ -79,31 +79,47 @@ plt.title("Distribution of NYC Taxi Trip Duration")
 plt.tight_layout()
 plt.show()  
 
+p99_duration = train["trip_duration"].quantile(0.99)
+
 plt.figure(figsize=(8, 5))
-plt.hist(np.log1p(train["trip_duration"]), bins=100)
-plt.xlabel("log(1 + Trip Duration)")
+
+plt.hist(
+    train.loc[train["trip_duration"] <= p99_duration, "trip_duration"] / 60,
+    bins=100
+)
+
+plt.xlabel("Trip Duration (minutes)")
 plt.ylabel("Number of Trips")
-plt.title("Distribution of Log-Transformed NYC Taxi Trip Duration")
+plt.title("NYC Taxi Trip Duration Distribution (≤ 99th Percentile)")
 plt.tight_layout()
 
 plt.savefig(
-    REPORTS_DIR / "trip_duration_log_distribution.png",
-    dpi=150
+    REPORTS_DIR / "trip_duration_distribution_99pct.png",
+    dpi=150,
+    bbox_inches="tight"
 )
 
 plt.show()
 
 plt.figure(figsize=(8, 5))
-hourly_median.plot(kind="bar")
+
+plt.plot(
+    hourly_median.index,
+    hourly_median.values / 60,
+    marker="o"
+)
 
 plt.xlabel("Pickup Hour")
-plt.ylabel("Median Trip Duration (seconds)")
+plt.ylabel("Median Trip Duration (minutes)")
 plt.title("Median Trip Duration by Pickup Hour")
+plt.xticks(range(0, 24))
+
 plt.tight_layout()
 
 plt.savefig(
     REPORTS_DIR / "median_trip_duration_by_hour.png",
-    dpi=150
+    dpi=150,
+    bbox_inches="tight"
 )
 
 plt.show()
