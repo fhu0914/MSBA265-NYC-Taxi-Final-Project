@@ -23,6 +23,8 @@ Using only information available at or before pickup, how accurately can taxi tr
 
 The prediction is intended to support trip-time estimation and operational planning at the time of pickup. It is not intended to replace official navigation or safety-critical systems.
 
+This project assumes that the passenger's destination coordinates are known at prediction time.
+
 ### Dataset Overview
 
 This project uses the New York City Taxi Trip Duration dataset from the Kaggle competition.
@@ -46,6 +48,55 @@ Important variables include:
 The target variable is `trip_duration`, measured in seconds.
 
 `dropoff_datetime` will not be used as a predictor because it is only available after the trip is completed and would directly reveal information about the target.
+
+### Data Setup
+
+Download `train.zip` from the Kaggle New York City Taxi Trip Duration competition:
+
+https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data
+
+The raw data is not included in this repository.
+
+### How to Run
+
+Clone the repository:
+
+```bash
+git clone https://github.com/fhu0914/MSBA265-NYC-Taxi-Final-Project.git
+cd MSBA265-NYC-Taxi-Final-Project
+```
+
+Install the required packages:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Create the data folder:
+
+```bash
+mkdir data
+```
+
+Download `train.zip` from the Kaggle link above and place it here:
+
+`data/train.zip`
+
+Run the P1 analysis:
+
+```bash
+python src/initial_eda.py
+```
+
+The script will display several figures. Close each figure window to allow the script to continue running.
+
+A successful run should produce approximately:
+
+- Baseline validation RMSLE: `0.7971`
+- Distance-only linear regression RMSLE: `0.6388`
+- Distance + pickup hour linear regression RMSLE: `0.6376`
+
+It should also generate the PNG files in the `reports/` folder.
 
 ### Proposed Method
 
@@ -79,7 +130,7 @@ This initial result suggests that trip distance contains useful predictive infor
 
 The initial data audit also identified extreme values, including unusually long trip durations and very large calculated trip distances. These observations will be investigated before any filtering decisions are made.
 
-This suggests that trip distance is the dominant early predictor, while pickup time may provide smaller incremental value.
+This suggests that trip distance is the strongest predictor tested so far, while pickup time provides smaller incremental value.
 
 ### Initial Findings
 
@@ -87,7 +138,7 @@ The target variable, `trip_duration`, is strongly right-skewed in its original s
 
 Median trip duration also varies by pickup hour. Trips are generally shorter in the early morning and longer during the daytime, suggesting that pickup time may be a useful predictor of trip duration.
 
-Estimated trip distance appears to be the strongest initial predictor. A distance-only linear regression substantially improved validation RMSLE compared with the median baseline, while adding pickup hour produced a smaller additional improvement.
+Estimated trip distance appears to be the strongest predictor tested so far. A distance-only linear regression substantially improved validation RMSLE compared with the median baseline, while adding pickup hour produced a smaller additional improvement.
 
 ### Next Steps
 
