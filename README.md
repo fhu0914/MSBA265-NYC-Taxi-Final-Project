@@ -5,7 +5,9 @@
 
 ## ⚠️ START HERE: Required Data Before Running
 
-The raw Kaggle dataset is not included in this GitHub repository.
+The raw Kaggle dataset is not included in this GitHub repository. This is intentional: the Kaggle competition rules restrict redistribution, and the file is about 63 MB, which is too large to version-control.
+
+**You must download it yourself before running anything.**
 
 **Before running the analysis, you must download `train.zip`.**
 
@@ -55,8 +57,6 @@ This project uses the New York City Taxi Trip Duration dataset from the Kaggle c
 The data is based on 2016 New York City yellow taxi trip records. The training set contains 1,458,644 trips, and the test set contains 625,134 trips.
 
 Each row represents one taxi trip.
-# Converted for the data audit only. Excluded as a predictor: it is unknown
-# at pickup time and would leak the target.
 
 Important variables include:
 
@@ -116,6 +116,9 @@ The file should remain zipped.
 You can confirm that it is in the correct location before continuing.
 
 #### 3. Create and activate a virtual environment
+
+- Python 3.10 or newer
+- Tested on Windows with Python 3.13
 
 **Windows PowerShell**
 
