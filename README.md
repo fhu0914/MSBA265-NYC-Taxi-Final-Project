@@ -3,6 +3,27 @@
 
 **P1 Combined Submission PDF:** [P1.pdf](./P1.pdf)
 
+## ⚠️ START HERE: Required Data Before Running
+
+The raw Kaggle dataset is not included in this GitHub repository.
+
+**Before running the analysis, you must download `train.zip`.**
+
+1. Open the Kaggle data page:
+   https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data
+2. Sign in to Kaggle.
+3. Accept the competition rules if Kaggle asks you to do so.
+4. Download **`train.zip`**.
+5. Place the file in this exact location:
+
+   `data/train.zip`
+
+Do **not** unzip the file.
+
+After that, continue with the reproduction instructions below.
+
+If `data/train.zip` is missing, `src/initial_eda.py` will intentionally stop and display an error message.
+
 ### Project Overview
 
 This project uses the New York City Taxi Trip Duration dataset to study and predict taxi trip duration.
@@ -73,19 +94,28 @@ The file must be named exactly `train.zip` and must contain a single file,
 
 ### How to Run
 
-Clone the repository:
+#### 1. Clone the repository
 
 ```bash
 git clone https://github.com/fhu0914/MSBA265-NYC-Taxi-Final-Project.git
 cd MSBA265-NYC-Taxi-Final-Project
 ```
 
-### Environment
+#### 2. Download the required dataset
 
-- Python 3.10 or newer
-- Tested on Windows with Python 3.13
+Before running the code, make sure you have completed the **START HERE** section above.
 
-Create and activate a virtual environment:
+You must have this file:
+
+```text
+data/train.zip
+```
+
+The file should remain zipped.
+
+You can confirm that it is in the correct location before continuing.
+
+#### 3. Create and activate a virtual environment
 
 **Windows PowerShell**
 
@@ -108,26 +138,32 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-Install the required packages:
+#### 4. Install the required packages
 
-```bash
+**Windows**
+
+```powershell
 python -m pip install -r requirements.txt
 ```
 
-Create the data folder:
+**macOS**
 
 ```bash
-mkdir data
+python3 -m pip install -r requirements.txt
 ```
 
-Download `train.zip` from the Kaggle link above and place it here:
+#### 5. Run the analysis
 
-`data/train.zip`
+**Windows**
 
-Run the P1 analysis:
+```powershell
+python src/initial_eda.py
+```
+
+**macOS**
 
 ```bash
-python src/initial_eda.py
+python3 src/initial_eda.py
 ```
 
 The script will display several figures. Close each figure window to allow the script to continue running.
@@ -138,7 +174,10 @@ A successful run should produce approximately:
 - Distance-only linear regression RMSLE: `0.6388`
 - Distance + pickup hour linear regression RMSLE: `0.6376`
 
-It should also generate the PNG files in the `reports/` folder.
+It should also generate:
+
+- `reports/trip_duration_distribution_99pct.png`
+- `reports/median_trip_duration_by_hour.png`
 
 ### Proposed Method
 

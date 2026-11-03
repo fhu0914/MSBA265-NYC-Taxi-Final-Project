@@ -18,9 +18,16 @@ TRAIN_ZIP = DATA_DIR / "train.zip"
 
 if not TRAIN_ZIP.exists():
     raise SystemExit(
-        f"Could not find {TRAIN_ZIP}\n"
-        "Download train.zip from the Kaggle competition (see Data Setup in "
-        "README.md) and place it at data/train.zip, then run this script again."
+        f"\nERROR: Required dataset not found:\n"
+        f"{TRAIN_ZIP}\n\n"
+        "Before running this project, download train.zip from:\n"
+        "https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data\n\n"
+        "You may need to sign in to Kaggle and accept the competition rules.\n"
+        "Place the downloaded file here exactly:\n"
+        "data/train.zip\n\n"
+        "Do not unzip the file.\n"
+        "Then run this script again.\n"
+        "See the START HERE section in README.md for full instructions."
     )
 
 train = pd.read_csv(TRAIN_ZIP)
