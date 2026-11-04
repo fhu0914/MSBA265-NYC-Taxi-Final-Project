@@ -5,7 +5,9 @@
 
 ### ⚠️ START HERE: Required Data Before Running
 
-The raw Kaggle dataset is not included in this GitHub repository. Before running the analysis, you must download **one specific file: `train.zip`** from the official Kaggle competition page.
+The raw Kaggle dataset is not included in this GitHub repository, and this is required by the competition rules. Section 7.B of the NYC Taxi Trip Duration rules states that participants may "not transmit, duplicate, publish, redistribute or otherwise provide or make available the Data to any party not participating in the Competition." Sharing the analysis code is explicitly permitted under Section 8.B, which is why this repository contains the code but not the data.
+
+Each user must therefore download the data themselves under their own accepted rules. Before running the analysis, you must download **one specific file: `train.zip`** from the official Kaggle competition page.
 
 #### Step 1: Create or sign in to a Kaggle account
 
