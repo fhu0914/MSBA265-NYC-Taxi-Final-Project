@@ -1,8 +1,24 @@
 # Data
 
-This project uses the Kaggle *New York City Taxi Trip Duration* competition
-dataset. The raw data is **not** included in this repository: the competition
-rules restrict redistribution, and `train.zip` is about 63 MB.
+The raw dataset is intentionally not stored in this repository.
+
+To run the project, download **`train.zip`** from the official Kaggle competition page:
+
+https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data
+
+On the Kaggle **Data** page:
+
+1. Look at the **Data Explorer panel on the right side**.
+2. Select **`train.zip`**.
+3. Confirm that the main file panel shows `train.zip` (about 66 MB).
+4. Click the small **download icon (down arrow)** in the upper-right corner of the file panel.
+5. Do **not** use `sample_submission.zip`, `test.zip`, or the large `Download All` button.
+6. Keep the file zipped.
+7. Place it in this folder so the final path is:
+
+`data/train.zip`
+
+Then return to the main project README and follow the **How to Run** instructions.
 
 ## Source
 

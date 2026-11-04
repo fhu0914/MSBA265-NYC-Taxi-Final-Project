@@ -3,28 +3,100 @@
 
 **P1 Combined Submission PDF:** [P1.pdf](./P1.pdf)
 
-## ⚠️ START HERE: Required Data Before Running
+### ⚠️ START HERE: Required Data Before Running
 
-The raw Kaggle dataset is not included in this GitHub repository. This is intentional: the Kaggle competition rules restrict redistribution, and the file is about 63 MB, which is too large to version-control.
+The raw Kaggle dataset is not included in this GitHub repository. Before running the analysis, you must download **one specific file: `train.zip`** from the official Kaggle competition page.
 
-**You must download it yourself before running anything.**
+#### Step 1: Create or sign in to a Kaggle account
 
-**Before running the analysis, you must download `train.zip`.**
+If you do not already have a Kaggle account, create a free account at:
 
-1. Open the Kaggle data page:
-   https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data
-2. Sign in to Kaggle.
-3. Accept the competition rules if Kaggle asks you to do so.
-4. Download **`train.zip`**.
-5. Place the file in this exact location:
+https://www.kaggle.com
 
-   `data/train.zip`
+Then sign in.
 
-Do **not** unzip the file.
+#### Step 2: Open the competition page
 
-After that, continue with the reproduction instructions below.
+Go to:
 
-If `data/train.zip` is missing, `src/initial_eda.py` will intentionally stop and display an error message.
+https://www.kaggle.com/competitions/nyc-taxi-trip-duration
+
+#### Step 3: Accept the competition rules
+
+Open the **Rules** tab.
+
+If Kaggle asks you to accept the competition rules, click:
+
+**I Understand and Accept**
+
+You may not be able to download the data until this step is completed.
+
+#### Step 4: Open the Data page
+
+Go to the **Data** tab, or open this link directly:
+
+https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data
+
+On the right side of the page, find the **Data Explorer** panel.
+
+You should see three files:
+
+- `sample_submission.zip`
+- `test.zip`
+- `train.zip`
+
+Click **`train.zip`**.
+
+#### Step 5: Download only `train.zip`
+
+After selecting `train.zip`, confirm that the main file panel shows:
+
+`train.zip` (about 66 MB)
+
+Then click the small **download icon (down arrow)** in the **upper-right corner of the main file panel**.
+
+**Do not click the large `Download All` button.**
+
+For this project, you do not need:
+
+- `sample_submission.zip`
+- `test.zip`
+- the KaggleHub Python API
+
+You only need **`train.zip`**.
+
+#### Step 6: Place the file in the project
+
+Keep the downloaded file zipped.
+
+**Do not unzip it.**
+
+Place it in this exact location:
+
+`data/train.zip`
+
+Before running the analysis, your project should contain:
+
+```text
+MSBA265-NYC-Taxi-Final-Project/
+├── data/
+│   └── train.zip
+├── reports/
+├── src/
+│   └── initial_eda.py
+├── P1.pdf
+├── README.md
+└── requirements.txt
+
+The script reads train.zip directly.
+
+`train.zip` will exist only in your local copy of the project after you download it.
+
+It is intentionally not stored or displayed in the GitHub repository.
+
+If data/train.zip is missing, src/initial_eda.py will intentionally stop and display an error message.
+
+After confirming that data/train.zip exists, continue to the How to Run section below.
 
 ### Project Overview
 
@@ -76,21 +148,15 @@ The target variable is `trip_duration`, measured in seconds.
 
 ### Data Setup
 
-This project uses the Kaggle *New York City Taxi Trip Duration* competition data,
-which is not included in this repository.
+This project uses the Kaggle *New York City Taxi Trip Duration* competition dataset.
 
-To obtain it:
+Please complete the **START HERE: Required Data Before Running** section at the top of this README before running the analysis.
 
-1. Create a free Kaggle account at https://www.kaggle.com if you do not have one.
-2. Open the competition page:
-   https://www.kaggle.com/competitions/nyc-taxi-trip-duration
-3. Go to the **Rules** tab and click **I Understand and Accept**.
-   Downloads stay locked until you do this.
-4. Go to the **Data** tab and download **`train.zip`** (about 63 MB).
-5. Place it at `data/train.zip` inside this repository.
+The required file is:
 
-The file must be named exactly `train.zip` and must contain a single file,
-`train.csv`. Do not unzip it; the script reads the zip directly.
+`data/train.zip`
+
+Keep the file zipped. The analysis script reads it directly.
 
 ### How to Run
 
