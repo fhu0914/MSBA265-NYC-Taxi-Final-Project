@@ -274,11 +274,4 @@ Data: 1,458,644 records read; 1,456,572 included; 2,072 excluded from scoped ana
 4. No causal or monetary savings claims. Presentation communicates *candidate* decisions, not proven operational gains.
 5. AI was used for code, writing, and debugging support; analysis outputs were run and checked. The student should review and be able to explain decisions.
 
-## What remains before Canvas submission
-
-- Review the drafted report/PPT yourself; check alignment with professor's current P2 due date and Canvas entry.
-- Add genuine P1 instructor feedback when available (currently not supplied).
-- **Ask a real peer to clone/pull your final GitHub commit, follow this README, verify outputs independently, and sign a NEW Assignment Validation PDF for P2. Do not fabricate the signature.**
-- Push this P2 material to your GitHub repository; use `git status` before `git add` and confirm that **data/train.zip is ignored**. Submit repository URL, commit SHA, completed validation form, and P2 deliverables per Canvas directions.
-
 Source: [Kaggle NYC Taxi Trip Duration](https://www.kaggle.com/competitions/nyc-taxi-trip-duration). Course specification: teacher-provided `FInal-Project.docx` and `assignment-validation.pdf`.
