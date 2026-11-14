@@ -1,0 +1,30 @@
+{
+  "data_rows_total": 1458644,
+  "rows_modeled": 1456572,
+  "training_rows": 1165257,
+  "validation_rows": 291315,
+  "excluded_rows": 2072,
+  "scope": "distance <= 200 km and trip duration <= 6 hours",
+  "split": "random 80/20 seed 42",
+  "example_prediction_min": 12.98,
+  "model_results": [
+    {
+      "model": "Median baseline",
+      "rmsle": 0.7743,
+      "mae_min": 7.422,
+      "within_3min_pct": 29.43
+    },
+    {
+      "model": "Distance-only linear regression",
+      "rmsle": 0.592,
+      "mae_min": 6.189,
+      "within_3min_pct": 43.66
+    },
+    {
+      "model": "Distance + pickup hour regression",
+      "rmsle": 0.5907,
+      "mae_min": 6.182,
+      "within_3min_pct": 43.93
+    }
+  ]
+}

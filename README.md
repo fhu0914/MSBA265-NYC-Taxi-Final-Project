@@ -1,314 +1,148 @@
-# MSBA 265 Final Project
-## New York City Taxi Trip Duration
+# NYC Taxi Trip Duration Prediction — MSBA 265 P2
 
-**P1 Combined Submission PDF:** [P1.pdf](./P1.pdf)
+**Status:** P2 draft with a working model, documented evaluation, saved artifact, **optional FastAPI bonus prototype**, report, and 5-slide stakeholder presentation. This is an extension of P1, not a new topic.
 
-### ⚠️ START HERE: Required Data Before Running
+## Project outputs
 
-The raw Kaggle dataset is not included in this GitHub repository, and this is required by the competition rules. Section 7.B of the NYC Taxi Trip Duration rules states that participants may "not transmit, duplicate, publish, redistribute or otherwise provide or make available the Data to any party not participating in the Competition." Sharing the analysis code is explicitly permitted under Section 8.B, which is why this repository contains the code but not the data.
+- `docs/P2_Draft_Report.docx`: 10-section draft with methods, evaluated findings, visuals, limitations, P1 feedback placeholder.
+- `docs/P2_Stakeholder_Draft.pptx`: ~5-minute stakeholder presentation.
+- `reports/summary.html`: open in browser for readable results and plots.
+- `reports/data_to_action_pipeline.png`, `reports/model_comparison.png`, `reports/errors_by_pickup_hour.png`, `reports/absolute_errors.png`.
+- `reports/model_comparison.csv` and `reports/summary.json`: machine-readable evidence.
+- `artifacts/taxi_eta_pipeline.joblib`: trained and reloaded model (version-sensitive).
+- `src/p2_analysis.py` and `src/check_saved_model.py`: analysis/reproduction.
+- `app.py`, `tests/test_api.py`: optional FastAPI bonus demo and tests.
+- `P1.pdf`, `src/initial_eda.py`: preserve the P1 materials for continuity.
 
-Each user must therefore download the data themselves under their own accepted rules. Before running the analysis, you must download **one specific file: `train.zip`** from the official Kaggle competition page.
+## Required Kaggle data (not distributed)
 
-#### Step 1: Create or sign in to a Kaggle account
-
-If you do not already have a Kaggle account, create a free account at:
-
-https://www.kaggle.com
-
-Then sign in.
-
-#### Step 2: Open the competition page
-
-Go to:
-
-https://www.kaggle.com/competitions/nyc-taxi-trip-duration
-
-#### Step 3: Accept the competition rules
-
-Open the **Rules** tab.
-
-If Kaggle asks you to accept the competition rules, click:
-
-**I Understand and Accept**
-
-You may not be able to download the data until this step is completed.
-
-#### Step 4: Open the Data page
-
-Go to the **Data** tab, or open this link directly:
+The competition dataset is **NOT** uploaded to GitHub or included in this project handoff. Obtain the original `train.zip` yourself from:
 
 https://www.kaggle.com/competitions/nyc-taxi-trip-duration/data
 
-On the right side of the page, find the **Data Explorer** panel.
+Log in, accept the competition's terms, download only `train.zip`, and place it at **`data/train.zip` without unzipping**. The model artifact contains learned coefficients, not the raw trip rows.
 
-You should see three files:
+## Reproduce the analysis
 
-- `sample_submission.zip`
-- `test.zip`
-- `train.zip`
+From the directory containing this README.
 
-Click **`train.zip`**.
-
-#### Step 5: Download only `train.zip`
-
-After selecting `train.zip`, confirm that the main file panel shows:
-
-`train.zip` (about 66 MB)
-
-Then click the small **download icon (down arrow)** in the **upper-right corner of the main file panel**.
-
-**Do not click the large `Download All` button.**
-
-For this project, you do not need:
-
-- `sample_submission.zip`
-- `test.zip`
-- the KaggleHub Python API
-
-You only need **`train.zip`**.
-
-#### Step 6: Place the file in the project
-
-Keep the downloaded file zipped.
-
-**Do not unzip it.**
-
-Place it in this exact location:
-
-`data/train.zip`
-
-Before running the analysis, your project should contain:
-
-```text
-MSBA265-NYC-Taxi-Final-Project/
-├── data/
-│   └── train.zip
-├── reports/
-├── src/
-│   └── initial_eda.py
-├── P1.pdf
-├── README.md
-└── requirements.txt
-```
-
-The script reads train.zip directly.
-
-`train.zip` will exist only in your local copy of the project after you download it.
-
-It is intentionally not stored or displayed in the GitHub repository.
-
-If data/train.zip is missing, src/initial_eda.py will intentionally stop and display an error message.
-
-After confirming that data/train.zip exists, continue to the How to Run section below.
-
-### Project Overview
-
-This project uses the New York City Taxi Trip Duration dataset to study and predict taxi trip duration.
-
-The goal is to build a reproducible analytics workflow that connects a real business problem with data exploration, modeling, evaluation, and actionable interpretation.
-
-### Business Problem
-
-Trip-time uncertainty can affect taxi fleet planning, driver utilization, and passenger expectations. A taxi fleet operations or urban mobility planning team could use more reliable trip-duration estimates to support operational decisions.
-
-### Stakeholder
-
-The primary stakeholder is a hypothetical New York City taxi fleet operations or urban mobility planning team.
-
-### Project Question
-
-Using only information available at or before pickup, how accurately can taxi trip duration be predicted?
-
-### Intended Use
-
-The prediction is intended to support trip-time estimation and operational planning at the time of pickup. It is not intended to replace official navigation or safety-critical systems.
-
-This project assumes that the passenger's destination coordinates are known at prediction time.
-
-### Dataset Overview
-
-This project uses the New York City Taxi Trip Duration dataset from the Kaggle competition.
-
-The data is based on 2016 New York City yellow taxi trip records. The training set contains 1,458,644 trips, and the test set contains 625,134 trips.
-
-Each row represents one taxi trip.
-
-Important variables include:
-
-- `vendor_id`
-- `pickup_datetime`
-- `dropoff_datetime`
-- `passenger_count`
-- `pickup_longitude`
-- `pickup_latitude`
-- `dropoff_longitude`
-- `dropoff_latitude`
-- `store_and_fwd_flag`
-
-The target variable is `trip_duration`, measured in seconds.
-
-`dropoff_datetime` will not be used as a predictor because it is only available after the trip is completed and would directly reveal information about the target.
-
-### Data Setup
-
-This project uses the Kaggle *New York City Taxi Trip Duration* competition dataset.
-
-Please complete the **START HERE: Required Data Before Running** section at the top of this README before running the analysis.
-
-The required file is:
-
-`data/train.zip`
-
-Keep the file zipped. The analysis script reads it directly.
-
-### How to Run
-
-#### 1. Clone the repository
-
-```bash
-git clone https://github.com/fhu0914/MSBA265-NYC-Taxi-Final-Project.git
-cd MSBA265-NYC-Taxi-Final-Project
-```
-
-#### 2. Download the required dataset
-
-Before running the code, make sure you have completed the **START HERE** section above.
-
-You must have this file:
-
-```text
-data/train.zip
-```
-
-The file should remain zipped.
-
-You can confirm that it is in the correct location before continuing.
-
-#### 3. Create and activate a virtual environment
-
-- Python 3.10 or newer
-- Tested on Windows with Python 3.13
-
-**Windows PowerShell**
+### Windows PowerShell
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python src/p2_analysis.py
+python src/check_saved_model.py
+python -m pytest -q tests/test_api.py
 ```
 
-If PowerShell blocks activation:
-
-```powershell
-Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
-.\.venv\Scripts\Activate.ps1
-```
-
-**macOS Terminal**
+### macOS / Linux Terminal
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-```
-
-#### 4. Install the required packages
-
-**Windows**
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-**macOS**
-
-```bash
 python3 -m pip install -r requirements.txt
+python3 src/p2_analysis.py
+python3 src/check_saved_model.py
+python3 -m pytest -q tests/test_api.py
 ```
 
-#### 5. Run the analysis
+On macOS the command is `python3`, not `python`. Use `python3 -m pytest` rather than a bare `pytest` so the project root stays on the import path.
 
-**Windows**
+For peers who only want to test the saved model and API, `train.zip` is not required until they rerun training. They must still obtain the original dataset and rerun the analysis for full independent reproduction.
+
+Expected output of `src/check_saved_model.py`:
+
+```text
+PASS: reloaded model prediction 5km, 14:00 -> 12.98 minutes
+```
+
+Expected output of the test command:
+
+```text
+4 passed
+```
+
+A scikit-learn `InconsistentVersionWarning` may appear when the artifact loads: it was fitted with scikit-learn 1.8.0. The prediction is unaffected and still returns 12.98 minutes.
+
+## Bonus: run FastAPI and test it
+
+### Windows PowerShell
 
 ```powershell
-python src/initial_eda.py
+uvicorn app:app --reload
 ```
 
-**macOS**
+### macOS / Linux Terminal
 
 ```bash
-python3 src/initial_eda.py
+python3 -m uvicorn app:app --reload
 ```
 
-The script will display several figures. Close each figure window to allow the script to continue running.
+Open **http://127.0.0.1:8000/docs**. Expand **POST /predict → Try it out** and paste:
 
-A successful run should produce approximately:
+```json
+{"distance_km":5,"pickup_hour":14}
+```
 
-- Baseline validation RMSLE: `0.7971`
-- Distance-only linear regression RMSLE: `0.6388`
-- Distance + pickup hour linear regression RMSLE: `0.6376`
+Expected: HTTP 200 and
 
-It should also generate:
+```json
+{"predicted_minutes":12.98,"model":"distance + pickup hour linear regression","note":"Illustrative estimate; great-circle distance is not road distance."}
+```
 
-- `reports/trip_duration_distribution_99pct.png`
-- `reports/median_trip_duration_by_hour.png`
+Send `"pickup_hour":31` instead and Pydantic range validation rejects it with HTTP 422:
 
-### Proposed Method
+```json
+{"detail":[{"type":"less_than_equal","loc":["body","pickup_hour"],"msg":"Input should be less than or equal to 23","input":31,"ctx":{"le":23}}]}
+```
 
-I will begin with a data quality audit and exploratory data analysis.
+`GET /health` returns `{"status":"ok","model_available":true}` and confirms the artifact is present.
 
-I plan to engineer interpretable features that are available at or before pickup, including:
+A captured run of this endpoint is included at `docs/api_demo.png`.
 
-- estimated trip distance from pickup and dropoff coordinates
-- pickup hour
-- day of week
-- month
-- passenger count
+To verify from a second terminal without the browser:
 
-I will first establish a simple baseline and then build a linear regression model.
+**macOS / Linux**
 
-Because the Kaggle competition evaluates predictions using RMSLE, I plan to model trip duration on a log scale and compare model performance using RMSLE.
+```bash
+curl -s -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" -d '{"distance_km":5,"pickup_hour":14}'
+```
 
-### Success Measure
+**Windows PowerShell**
 
-The primary evaluation metric will be Root Mean Squared Logarithmic Error (RMSLE).
+```powershell
+Invoke-RestMethod -Uri http://127.0.0.1:8000/predict -Method Post -ContentType "application/json" -Body '{"distance_km":5,"pickup_hour":14}'
+```
 
-A successful model should improve on the baseline while remaining interpretable and using only information that would realistically be available at prediction time.
+The four checks in `tests/test_api.py` cover `/health`, a valid prediction, an out-of-range pickup hour, and a negative distance.
 
-### Initial Feasibility Results
+## Latest actual evaluated results
 
-A simple median baseline predicts 662 seconds for every trip and achieved a validation RMSLE of 0.7971.
+| Model | RMSLE (↓) | MAE (min ↓) | % within ±3 min (↑) |
+|---|---:|---:|---:|
+| Median baseline | 0.7743 | 7.422 | 29.43% |
+| Distance only | 0.5920 | 6.189 | 43.66% |
+| Distance + pickup hour | **0.5907** | **6.182** | **43.93%** |
 
-A linear regression model using only estimated trip distance improved the validation RMSLE to 0.6388. Adding pickup hour produced a small additional improvement, reducing validation RMSLE from 0.6388 to 0.6376.
+Data: 1,458,644 records read; 1,456,572 included; 2,072 excluded from scoped analysis for trips over 6 hours or great-circle distances over 200 km. Fixed random 80/20 split with seed 42; 291,315 validation rows. Predictions are clipped to 0–360 minutes, with model trained on `log1p(trip_duration seconds)`. This is a limited proof of concept, **not a real-time ETA service**. The source data are from 2016.
 
-This initial result suggests that trip distance contains useful predictive information and that the project is feasible for further modeling.
+> P1 results differ because P1 used the full sample without this explicit scoped anomaly policy. **Do not claim P2 has improved the model solely by comparing cross-stage scores.** Model comparisons inside the P2 table are on the same sample and thus meaningful.
 
-The initial data audit also identified extreme values, including unusually long trip durations and very large calculated trip distances. These observations will be investigated before any filtering decisions are made.
+## Assumptions, limitations & integrity
 
-This suggests that trip distance is the strongest predictor tested so far, while pickup time provides smaller incremental value.
+1. Destination coordinates are known at prediction time; great-circle distance is not travel-route distance. Do not use `dropoff_datetime` (target leakage).
+2. Excluding trips beyond 6 hours is an outcome-based proof-of-concept scope; production coverage and fairness require further analysis. GPS anomalies also motivate the distance cap.
+3. The 80/20 random holdout is *retrospective*, not a chronological forecast test. Some uncertainty in atypical hours and trips remains.
+4. No causal or monetary savings claims. Presentation communicates *candidate* decisions, not proven operational gains.
+5. AI was used for code, writing, and debugging support; analysis outputs were run and checked. The student should review and be able to explain decisions.
 
-### Initial Findings
+## What remains before Canvas submission
 
-The target variable, `trip_duration`, is strongly right-skewed. For visualization, the histogram is limited to observations at or below the 99th percentile so that the main distribution is readable; this display cutoff does not remove observations from the modeling data. The model uses `log1p(trip_duration)` because the target is highly right-skewed.
+- Review the drafted report/PPT yourself; check alignment with professor's current P2 due date and Canvas entry.
+- Add genuine P1 instructor feedback when available (currently not supplied).
+- **Ask a real peer to clone/pull your final GitHub commit, follow this README, verify outputs independently, and sign a NEW Assignment Validation PDF for P2. Do not fabricate the signature.**
+- Push this P2 material to your GitHub repository; use `git status` before `git add` and confirm that **data/train.zip is ignored**. Submit repository URL, commit SHA, completed validation form, and P2 deliverables per Canvas directions.
 
-Median trip duration varies substantially by pickup hour, from about 7.9 minutes at 6:00 to about 12.1 minutes at 14:00. However, adding `pickup_hour` to the distance-only linear regression improves validation RMSLE only slightly, from 0.6388 to 0.6376. One likely reason is that hour is currently treated as a simple numeric feature, while the observed daily pattern is nonlinear.
-
-Estimated trip distance appears to be the strongest predictor tested so far. A distance-only linear regression substantially improved validation RMSLE compared with the median baseline, while adding pickup hour produced a smaller additional improvement.
-
-### Next Steps
-
-The next stage of the project will:
-
-- investigate extreme trip durations and unusually large calculated trip distances before making any filtering decisions
-- evaluate additional pickup-time features such as day of week and month
-- test whether additional available predictors improve validation RMSLE
-- compare more complete models with the current median baseline and simple linear regression models
-- maintain a leakage-free workflow using only information that would be available at prediction time
-- treat pickup hour as a categorical or cyclical feature rather than a linear
-  numeric value; its current linear encoding may explain the small improvement
-
-### AI Use Disclosure
-
-AI tools were used to assist with code generation, debugging, documentation, and explanations of technical concepts.
-
-I reviewed, tested, and revised the AI-assisted code, verified the outputs, and used the results to support my own analysis and interpretation.
-
-AI was used as a support tool rather than as a substitute for understanding the project workflow.
+Source: [Kaggle NYC Taxi Trip Duration](https://www.kaggle.com/competitions/nyc-taxi-trip-duration). Course specification: teacher-provided `FInal-Project.docx` and `assignment-validation.pdf`.
