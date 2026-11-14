@@ -107,7 +107,7 @@ Expected: HTTP 200 and
 {"predicted_minutes":12.98,"model":"distance + pickup hour linear regression","note":"Illustrative estimate; great-circle distance is not road distance."}
 ```
 
-Send `"pickup_hour":31` instead and Pydantic range validation rejects it with HTTP 422:
+Send `{"distance_km":5,"pickup_hour":31}` instead and Pydantic range validation rejects it with HTTP 422:
 
 ```json
 {"detail":[{"type":"less_than_equal","loc":["body","pickup_hour"],"msg":"Input should be less than or equal to 23","input":31,"ctx":{"le":23}}]}
