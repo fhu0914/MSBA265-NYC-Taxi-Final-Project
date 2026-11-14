@@ -46,7 +46,9 @@ REPORT = ROOT / "reports" / "monitoring_report.json"
 #
 # At 30 requests a perfectly healthy service would be flagged for investigation
 # two times out of three, which would train the operator to ignore the alarm.
-# 500 is the first round figure where both false-alarm rates reach zero.
+# 500 is the smallest round figure at which no false alarm of either kind was
+# observed in 400 trials. Zero observed is not proof of a zero rate, and the
+# measurement used distance_km against this baseline, not every variable.
 MIN_REQUESTS = 500
 
 
