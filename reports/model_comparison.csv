@@ -1,0 +1,4 @@
+model,rmsle,mae_min,within_3min_pct
+Median baseline,0.7743,7.422,29.43
+Distance-only linear regression,0.592,6.189,43.66
+Distance + pickup hour regression,0.5907,6.182,43.93

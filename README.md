@@ -40,6 +40,18 @@ python src/check_saved_model.py
 python -m pytest -q tests/test_api.py
 ```
 
+If PowerShell refuses to run `Activate.ps1` with "running scripts is disabled on
+this system", allow it for this window only and activate again:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+That setting applies to the current terminal only and changes nothing
+system-wide. Alternatively, skip activation entirely and call the interpreter
+directly, for example `.venv\Scripts\python.exe -m pytest -q tests/`.
+
 ### macOS / Linux Terminal
 
 ```bash
@@ -203,8 +215,11 @@ alarm it records is a false alarm:
 
 At 30 requests a perfectly healthy service would be sent for investigation two
 times out of three, which would simply teach the operator to ignore the alarm.
-500 is the first round figure where both false-alarm rates reach zero, so that
-is the threshold the monitor uses.
+500 is the smallest round figure at which no false alarm of either kind was
+observed in 400 trials, so that is the threshold the monitor uses. Zero
+observed false alarms in 400 trials is not proof that the rate is zero; it
+bounds it loosely, and the measurement covers `distance_km` against this
+specific 2016 baseline rather than every variable the monitor tracks.
 
 ### Demonstrated behaviour
 
