@@ -1,6 +1,6 @@
 # NYC Taxi Trip Duration Prediction — MSBA 265 P2
 
-**Status:** P2 draft with a working model, documented evaluation, saved artifact, **optional FastAPI bonus prototype**, report, and 5-slide stakeholder presentation. This is an extension of P1, not a new topic.
+**Status:** P2 draft with a working model, documented evaluation, saved artifact, **three optional bonus extensions (FastAPI, Docker, MLOps drift monitoring)**, report, and 5-slide stakeholder presentation. This is an extension of P1, not a new topic.
 
 ## Project outputs
 
@@ -12,6 +12,9 @@
 - `artifacts/taxi_eta_pipeline.joblib`: trained and reloaded model (version-sensitive).
 - `src/p2_analysis.py` and `src/check_saved_model.py`: analysis/reproduction.
 - `app.py`, `tests/test_api.py`: optional FastAPI bonus demo and tests.
+- `Dockerfile`, `.dockerignore`: optional Docker bonus; builds and runs the service with its dependencies.
+- `src/make_monitoring_baseline.py`, `src/monitor.py`, `src/check_monitor_sensitivity.py`, `tests/test_monitor.py`: optional MLOps bonus; drift detection with measured alarm thresholds.
+- `artifacts/monitoring_baseline.json`: reference distributions the monitor compares live traffic against.
 - `P1.pdf`, `src/initial_eda.py`: preserve the P1 materials for continuity.
 
 ## Required Kaggle data (not distributed)
@@ -117,6 +120,124 @@ Invoke-RestMethod -Uri http://127.0.0.1:8000/predict -Method Post -ContentType "
 ```
 
 The four checks in `tests/test_api.py` cover `/health`, a valid prediction, an out-of-range pickup hour, and a negative distance.
+
+## Bonus: Docker
+
+Packages the model and its API so a reviewer can run the prototype without
+installing Python or any dependency by hand. The image carries the fitted
+artifact only; `.dockerignore` keeps the Kaggle dataset out of it.
+
+Build:
+
+```bash
+docker build -t taxi-eta .
+```
+
+Run the reproducible test suite inside the image:
+
+```bash
+docker run --rm taxi-eta python -m pytest -q tests/
+```
+
+Run the service:
+
+```bash
+docker run --rm -p 8000:8000 taxi-eta
+```
+
+Then open **http://127.0.0.1:8000/docs** and send the same request as above;
+`{"distance_km":5,"pickup_hour":14}` returns `predicted_minutes` 12.98, exactly
+as it does outside the container.
+
+The commands are identical on Windows PowerShell, macOS and Linux.
+
+## Bonus: MLOps — drift monitoring
+
+A deployed model never sees the real trip duration, so live accuracy cannot be
+measured directly. What can be measured is whether the traffic arriving at the
+API still resembles the data the model was fitted on, and whether the
+predictions it returns still look normal. A model rarely fails loudly; it fails
+quietly on inputs it was never trained for.
+
+Every served prediction is appended to `logs/predictions.jsonl`. The monitor
+compares that traffic against a reference built from the training rows, using
+the **Population Stability Index (PSI)** with the standard bands:
+
+| PSI | Reading | Action |
+|---|---|---|
+| below 0.10 | no meaningful shift | none |
+| 0.10 to 0.25 | moderate shift | keep watching, do not retrain yet |
+| above 0.25 | significant shift | investigate before trusting the estimates |
+
+Build the reference, then check the log:
+
+```bash
+python src/make_monitoring_baseline.py     # needs data/train.zip; writes artifacts/monitoring_baseline.json
+python src/monitor.py                      # writes reports/monitoring_report.json
+```
+
+On macOS use `python3`. `src/monitor.py` exits with code 1 when any variable
+crosses the investigate threshold, so the check can later be wired into a
+scheduled job.
+
+### Why the monitor waits for 500 requests
+
+An alarm is only useful if it stays quiet when nothing is wrong. PSI over ten
+bins is noisy on small samples, so the minimum sample size was measured rather
+than assumed:
+
+```bash
+python src/check_monitor_sensitivity.py    # writes reports/monitor_sensitivity.csv
+```
+
+It repeatedly draws traffic that matches the baseline by construction, so every
+alarm it records is a false alarm:
+
+| Requests | False "watch" | False "investigate" |
+|---:|---:|---:|
+| 30 | 97.2% | 68.2% |
+| 60 | 75.8% | 14.8% |
+| 100 | 40.2% | 0.2% |
+| 200 | 2.8% | 0.0% |
+| 500 | 0.0% | 0.0% |
+
+At 30 requests a perfectly healthy service would be sent for investigation two
+times out of three, which would simply teach the operator to ignore the alarm.
+500 is the first round figure where both false-alarm rates reach zero, so that
+is the threshold the monitor uses.
+
+### Demonstrated behaviour
+
+Healthy traffic drawn from the training distribution:
+
+```text
+distance_km        PSI  0.0064  stable
+pickup_hour        PSI  0.0179  stable
+predicted_minutes  PSI  0.0222  stable
+Verdict: STABLE
+```
+
+A simulated ingestion fault sending only long overnight trips:
+
+```text
+distance_km        PSI 12.4338  investigate   live mean  66.963 vs baseline 3.433
+pickup_hour        PSI 12.5229  investigate   live mean   1.487 vs baseline 13.603
+predicted_minutes  PSI 12.4338  investigate   live mean 360.000 vs baseline 13.051
+Verdict: INVESTIGATE
+```
+
+The second case shows why the monitoring matters: the service returned HTTP 200
+for every one of those requests. The log-linear model, extrapolated far beyond
+its training range, saturated at the 360-minute output cap instead of failing.
+Nothing in the API response would have revealed the problem.
+
+### Limitations
+
+Drift detection answers whether the inputs changed, not whether the model is
+still correct; confirming that needs actual trip durations, which arrive only
+after each trip ends. The reference is a fixed 2016 training sample, so genuine
+seasonal change would also register as drift and has to be ruled out by a human
+before retraining.
 
 ## Latest actual evaluated results
 

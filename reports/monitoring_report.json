@@ -1,0 +1,32 @@
+{
+  "checked_at": "2026-11-14T09:44:58+00:00",
+  "log": "logs\\predictions.jsonl",
+  "requests": 601,
+  "min_requests": 500,
+  "psi_thresholds": {
+    "stable": 0.1,
+    "investigate": 0.25
+  },
+  "variables": {
+    "distance_km": {
+      "psi": 11.68,
+      "status": "investigate",
+      "live_mean": 66.86,
+      "baseline_mean": 3.433
+    },
+    "pickup_hour": {
+      "psi": 11.7693,
+      "status": "investigate",
+      "live_mean": 1.507,
+      "baseline_mean": 13.603
+    },
+    "predicted_minutes": {
+      "psi": 11.68,
+      "status": "investigate",
+      "live_mean": 359.423,
+      "baseline_mean": 13.051
+    }
+  },
+  "verdict": "investigate",
+  "action": "Investigate before trusting the estimates: confirm the input source is unchanged, compare against recent actual trip durations, and consider refitting on data that covers the new population."
+}

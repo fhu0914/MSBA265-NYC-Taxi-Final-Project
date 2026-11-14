@@ -1,0 +1,20 @@
+# The Kaggle dataset must never enter the image: it is large, and the
+# competition rules do not permit redistributing it.
+data/
+
+# Local environments and caches.
+.venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+
+# Repository history, documents and generated reports are for human reviewers,
+# not for the running service.
+.git/
+.gitignore
+docs/
+reports/
+logs/
+*.pdf
+README.md
